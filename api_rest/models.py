@@ -1,32 +1,28 @@
-from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db.models import (
     BooleanField, 
     EmailField, 
     IntegerField, 
-    Manager, 
     Model, 
     CharField, 
     ForeignKey, 
     FloatField, 
     DateTimeField, 
     CASCADE,
-    ManyToManyField
 )
 
-class UserManager(BaseUserManager, Manager):
-    """Manager for user Model"""
+class GestorUsuarios(BaseUserManager):
 
     use_in_migrations = True
 
-    def _create_user(self, email, password, is_superuser, **extra_fields):
+    def _create_user(self, email, password, **extra_fields):
         """Base method to create user"""
         if not email:
             raise ValueError("El email es obligatorio")
-        password = make_password(password)
         user = self.model(
-            email=self.normalize_email(email), password=password, is_superuser=is_superuser, **extra_fields
+            email=self.normalize_email(email), **extra_fields
         )
+        user.set_password(password)
         user.save(using=self._db)
         return user
 
@@ -40,40 +36,32 @@ class UserManager(BaseUserManager, Manager):
 
     def create_superuser(self, email, password, **extra_fields):
         """Creates and saves new superuser"""
-        return self._create_user(email, password, True, **extra_fields)
+        extra_fields.setdefault("nombre", 'asd')
+        extra_fields.setdefault("telefono", 'asd')
+        extra_fields.setdefault("direccion", 'asd')
+
+        extra_fields.setdefault("active", True)
+        
+        return self._create_user(email, password, **extra_fields)
 
 
-class User(AbstractBaseUser, PermissionsMixin):
-    name = CharField(max_length=20)
+class Usuario(AbstractBaseUser):
     email = EmailField(verbose_name="Correo electrónico", unique=True, blank=False)
+    nombre = CharField(max_length=100, default="")
+    telefono = CharField(max_length=10, default="")
+    direccion = CharField(max_length=70, default="")
+
     active = BooleanField(default=True)
 
-    objects = UserManager()
+    objects = GestorUsuarios()
     USERNAME_FIELD = "email"
 
-    groups = ManyToManyField(
-        'auth.Group',
-        verbose_name=('groups'),
-        blank=True,
-        related_name='custom_user_set'  # Set a unique related_name here
-    )
-    
-    user_permissions = ManyToManyField(
-        'auth.Permission',
-        verbose_name=('user permissions'),
-        blank=True,
-        related_name='custom_user_set'  # Set a unique related_name here
-    )
-
-    def save(self, args, **kwargs):
-        super(User, self).save(args, **kwargs)
-
-class Usuario(Model):
-    telefono = CharField(max_length=10)
-    direccion = CharField(max_length=70)
+    def save(self, *args, **kwargs):
+        super(Usuario, self).save(*args, **kwargs)
 
     def __str__(self):
         return str(self.nombre)
+    
 
 class Conductor(Model):
     usuario = ForeignKey(Usuario, on_delete=CASCADE)
