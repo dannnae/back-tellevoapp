@@ -10,7 +10,7 @@
 
 ## MySQL
 
-1. "Create Database prueba"
-2. "Use prueba"
-3. "Create User 'root2'@'localhost' IDENTIFIED BY 'admin123'"
-4. GRANT ALL PRIVELEGES ON prueba TO 'root2'@'localhost'
+1. Create Database prueba
+2. Use prueba
+3. Create User 'root2'@'localhost' IDENTIFIED BY 'admin123'
+4. GRANT ALL PRIVILEGES ON prueba TO 'root2'@'localhost'
