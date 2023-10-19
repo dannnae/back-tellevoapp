@@ -7,3 +7,10 @@
 3. Activar scripts `env/Scripts/activate`
 4. Crear archivo `my.cnf`
 5. Correr server con el comando `python manage.py runserver`
+
+## MySQL
+
+1. "Create Database prueba"
+2. "Use prueba"
+3. "Create User 'root2'@'localhost' IDENTIFIED BY 'admin123'"
+4. GRANT ALL PRIVELEGES ON prueba TO 'root2'@'localhost'
