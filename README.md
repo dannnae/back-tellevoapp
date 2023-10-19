@@ -15,3 +15,5 @@
 3. Create User 'root2'@'localhost' IDENTIFIED BY 'admin123'
 4. GRANT ALL PRIVILEGES ON prueba TO 'root2'@'localhost'
 5. avaras08
+6. administration abajo izquierda
+7. user and priveleges
