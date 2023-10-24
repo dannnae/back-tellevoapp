@@ -16,5 +16,3 @@
 3. Crear usuario `CREATE USER '<user>'@'localhost' IDENTIFIED BY '<password>'`
 4. Dar privilegios `GRANT ALL PRIVILEGES ON <nombre database> TO '<nombre usuario>'@'localhost'`
 5. Contrasena Mysql avaras08
-6. administration abajo izquierda
-7. user and priveleges
