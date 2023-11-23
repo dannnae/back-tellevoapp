@@ -79,6 +79,10 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
 }
 
+SIMPLE_JWT = {
+    "TOKEN_OBTAIN_SERIALIZER": "backend.custom_login_serializer.MyTokenObtainPairSerializer",
+}
+
 AUTH_USER_MODEL = "api_rest.Usuario"
 
 
