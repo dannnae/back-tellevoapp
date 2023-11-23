@@ -61,13 +61,16 @@ class Usuario(AbstractBaseUser):
 
     def __str__(self):
         return str(self.nombre)
-    
 
 class Conductor(Model):
-    usuario = ForeignKey(Usuario, on_delete=CASCADE)
-    calificacion = FloatField()
+    usuario = ForeignKey(Usuario, on_delete=CASCADE, related_name='datos_conductor')
+    vehiculo = ForeignKey('Vehiculo', on_delete=CASCADE, related_name='conductor', null=True)
+    calificacion = IntegerField()
+
+class Vehiculo(Model):
     patente = CharField(max_length=6)
-    modelo_vehiculo = CharField(max_length=50)
+    marca =CharField(max_length=50)
+    modelo = CharField(max_length=50)
 
 class Viaje(Model):
     usuario_pasajero = ForeignKey(Usuario, on_delete=CASCADE, related_name='viajes_pasajero') 
