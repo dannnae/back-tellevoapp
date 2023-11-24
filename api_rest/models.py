@@ -50,6 +50,8 @@ class Usuario(AbstractBaseUser):
     nombre = CharField(max_length=100, default="")
     telefono = CharField(max_length=10, default="")
     direccion = CharField(max_length=70, default="")
+    es_conductor = BooleanField(default=False)
+    calificacion = FloatField(default=0.0)
 
     active = BooleanField(default=True)
 
@@ -61,20 +63,17 @@ class Usuario(AbstractBaseUser):
 
     def __str__(self):
         return str(self.nombre)
-
-class Conductor(Model):
-    usuario = ForeignKey(Usuario, on_delete=CASCADE, related_name='datos_conductor')
-    vehiculo = ForeignKey('Vehiculo', on_delete=CASCADE, related_name='conductor', null=True)
-    calificacion = IntegerField()
+    
 
 class Vehiculo(Model):
+    conductor = ForeignKey(Usuario, on_delete=CASCADE, related_name='conductor', null=True)
     patente = CharField(max_length=6)
     marca =CharField(max_length=50)
     modelo = CharField(max_length=50)
 
 class Viaje(Model):
     usuario_pasajero = ForeignKey(Usuario, on_delete=CASCADE, related_name='viajes_pasajero') 
-    conductor = ForeignKey(Conductor, on_delete=CASCADE)
+    conductor = ForeignKey(Usuario, on_delete=CASCADE, related_name='viajes_conductor')
     fecha_hora_inicio = DateTimeField()
     fecha_hora_termino = DateTimeField()
     origen = CharField(max_length=100)
@@ -88,7 +87,7 @@ class Pago(Model):
     fecha = DateTimeField()
 
 class Resena(Model):
-    usuario = ForeignKey(Usuario, on_delete=CASCADE)
-    conductor = ForeignKey(Conductor, on_delete=CASCADE)
+    usuario = ForeignKey(Usuario, on_delete=CASCADE, related_name='resena_usuario')
+    conductor = ForeignKey(Usuario, on_delete=CASCADE, related_name='resena_conductor')
     comentario = CharField(max_length=100)
     calificacion = FloatField()
