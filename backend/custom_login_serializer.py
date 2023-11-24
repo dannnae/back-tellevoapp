@@ -5,6 +5,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        token['is_conductor'] = True if user.datos_conductor.all() else False
+        token['is_conductor'] = user.es_conductor
 
         return token
