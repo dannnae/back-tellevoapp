@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models import (
     BooleanField, 
     EmailField, 
@@ -9,6 +10,7 @@ from django.db.models import (
     FloatField, 
     DateTimeField, 
     CASCADE,
+    ManyToManyField
 )
 
 class GestorUsuarios(BaseUserManager):
@@ -68,17 +70,17 @@ class Usuario(AbstractBaseUser):
 class Vehiculo(Model):
     conductor = ForeignKey(Usuario, on_delete=CASCADE, related_name='conductor', null=True)
     patente = CharField(max_length=6)
-    marca =CharField(max_length=50)
+    marca = CharField(max_length=50)
     modelo = CharField(max_length=50)
 
+
 class Viaje(Model):
-    usuario_pasajero = ForeignKey(Usuario, on_delete=CASCADE, related_name='viajes_pasajero') 
+    pasajeros = ManyToManyField(Usuario, related_name='viajes_pasajero')
     conductor = ForeignKey(Usuario, on_delete=CASCADE, related_name='viajes_conductor')
     fecha_hora_inicio = DateTimeField()
-    fecha_hora_termino = DateTimeField()
     origen = CharField(max_length=100)
-    destino = CharField(max_length=100)
-    tarifa = IntegerField()
+    tarifa = IntegerField(validators=[MinValueValidator(1000), MaxValueValidator(3000)])
+
 
 class Pago(Model):
     viaje = ForeignKey(Viaje, on_delete=CASCADE)
