@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer, CharField
-from api_rest.models import Usuario
+from api_rest.models import Usuario, Viaje
 from django.contrib.auth.hashers import make_password
 
 class CreateUsuarioSerializer(ModelSerializer):
@@ -20,3 +20,8 @@ class CreateUsuarioSerializer(ModelSerializer):
         )
         
         return user
+
+class ViajeSerializer(ModelSerializer):
+    class Meta:
+        model = Viaje
+        fields = ('id', 'conductor', 'fecha_hora_inicio', 'origen', 'tarifa')
