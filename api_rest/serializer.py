@@ -22,6 +22,8 @@ class CreateUsuarioSerializer(ModelSerializer):
         return user
 
 class ViajeSerializer(ModelSerializer):
+    nombre_conductor = CharField(required=False, read_only=True, source='conductor.nombre')
+    
     class Meta:
         model = Viaje
-        fields = ('id', 'conductor', 'fecha_hora_inicio', 'origen', 'tarifa')
+        fields = ('id', 'conductor', 'fecha_hora_inicio', 'origen', 'tarifa', 'nombre_conductor')
