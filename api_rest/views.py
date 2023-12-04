@@ -1,12 +1,11 @@
-from django.http import JsonResponse
 from rest_framework.viewsets import ModelViewSet
 from api_rest.models import Usuario, Vehiculo, Viaje
-from .serializer import CreateUsuarioSerializer, ViajeSerializer
+from .serializer import CreateUsuarioSerializer, ViajeSerializer, AgregarPasajeroSerializer
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST
-from rest_framework.decorators import api_view
+from rest_framework.status import HTTP_200_OK
 from rest_framework.response import Response
-from django.core.mail import send_mail
+from rest_framework.decorators import action
+
 
 class UsuarioViewSet(ModelViewSet):
     serializer_class = CreateUsuarioSerializer
@@ -37,3 +36,14 @@ class UsuarioViewSet(ModelViewSet):
 class ViajeViewSet(ModelViewSet):
     queryset = Viaje.objects.all()
     serializer_class = ViajeSerializer
+
+    @action(methods=['put'], detail=True)
+    def agregar_pasajero(self, request, pk):
+        serializer = AgregarPasajeroSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        viaje = Viaje.objects.get(pk=pk)
+        viaje.pasajeros.add(Usuario.objects.get(pk=serializer.validated_data['pasajero_nuevo']))
+
+        return Response(HTTP_200_OK)
+    

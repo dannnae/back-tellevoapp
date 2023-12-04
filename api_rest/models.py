@@ -12,6 +12,10 @@ from django.db.models import (
     CASCADE,
     ManyToManyField
 )
+from django.dispatch import receiver
+from django.db.models.signals import m2m_changed
+from django.core.mail import send_mail
+from django.conf import settings
 
 class GestorUsuarios(BaseUserManager):
 
@@ -79,6 +83,8 @@ class Viaje(Model):
     conductor = ForeignKey(Usuario, on_delete=CASCADE, related_name='viajes_conductor')
     fecha_hora_inicio = DateTimeField()
     origen = CharField(max_length=100)
+    latitud = FloatField(null=True)
+    longitud = FloatField(null=True)
     tarifa = IntegerField(validators=[MinValueValidator(1000), MaxValueValidator(3000)])
 
 
@@ -93,3 +99,23 @@ class Resena(Model):
     conductor = ForeignKey(Usuario, on_delete=CASCADE, related_name='resena_conductor')
     comentario = CharField(max_length=100)
     calificacion = FloatField()
+
+
+@receiver(m2m_changed, sender=Viaje.pasajeros.through, dispatch_uid="mandar_correo")
+def mandar_correo(sender, instance: Viaje, pk_set: set, action, **kwargs):
+    if action == 'post_add':
+        usuario = Usuario.objects.get(pk=pk_set.pop())
+        print(usuario.email)
+
+        send_mail(
+            'Reserva exitosa', 
+            'La reserva se ha hecho correctamente',
+            settings.EMAIL_HOST_USER,
+            [usuario.email]
+        )
+        send_mail(
+            'Pasajero nuevo', 
+            'Un pasajero ha realizado reserva en tu viaje',
+            settings.EMAIL_HOST_USER,
+            [instance.conductor.email]
+        )
