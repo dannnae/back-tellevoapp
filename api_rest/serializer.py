@@ -50,3 +50,7 @@ class AgregarPasajeroSerializer(Serializer):
         
         return pasajero_nuevo
     
+class UsuarioSerializer(ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = ('nombre', 'email', 'telefono', 'es_conductor')
