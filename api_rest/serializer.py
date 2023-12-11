@@ -25,10 +25,11 @@ class CreateUsuarioSerializer(ModelSerializer):
 class ViajeSerializer(ModelSerializer):
     nombre_conductor = CharField(required=False, read_only=True, source='conductor.nombre')
     hora_formateada = SerializerMethodField()
+
     
     class Meta:
         model = Viaje
-        fields = ('id', 'conductor', 'hora_formateada', 'origen', 'tarifa', 'nombre_conductor', 'latitud', 'longitud')
+        fields = ('id', 'conductor', 'hora_formateada', 'origen', 'tarifa', 'nombre_conductor', 'latitud', 'longitud', 'fecha_hora_inicio')
 
     def get_hora_formateada(self, viaje: Viaje):
         return viaje.fecha_hora_inicio.strftime('%d-%m-%Y %H:%M')
