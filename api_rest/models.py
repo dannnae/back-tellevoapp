@@ -105,17 +105,24 @@ class Resena(Model):
 def mandar_correo(sender, instance: Viaje, pk_set: set, action, **kwargs):
     if action == 'post_add':
         usuario = Usuario.objects.get(pk=pk_set.pop())
-        print(usuario.email)
-
+        
+        conductor = instance.conductor
+        conductor_nombre = conductor.nombre
+        hora_viaje = instance.fecha_hora_inicio
+        origen_viaje = instance.origen
+        tarifa_viaje = instance.tarifa
+        
         send_mail(
             'Reserva exitosa', 
-            'La reserva se ha hecho correctamente',
+            f'La reserva se ha hecho correctamente para el viaje que inicia a las {hora_viaje}. '
+            f'El origen del viaje es {origen_viaje} y la tarifa es {tarifa_viaje}.',
             settings.EMAIL_HOST_USER,
             [usuario.email]
         )
         send_mail(
             'Pasajero nuevo', 
-            'Un pasajero ha realizado reserva en tu viaje',
+            f'Un pasajero ha realizado reserva en tu viaje. '
+            f'El origen del viaje es {origen_viaje} y la tarifa es {tarifa_viaje}.',
             settings.EMAIL_HOST_USER,
-            [instance.conductor.email]
+            [conductor.email]
         )
